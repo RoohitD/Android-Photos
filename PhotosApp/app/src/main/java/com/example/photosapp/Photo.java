@@ -103,7 +103,7 @@ public class Photo implements Serializable {
      */
     public void setCaption(String caption) {
         this.caption = caption;
-        User.save();
+        //User.save();
     }
 
     /**
@@ -113,7 +113,7 @@ public class Photo implements Serializable {
      */
     public void editTags(String tags) {
         this.tags = convertTags(tags);
-        User.save();
+        //User.save();
     }
 
     /**

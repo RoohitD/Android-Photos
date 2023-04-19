@@ -1,4 +1,4 @@
-package classes;
+package com.example.photosapp;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class Album implements Serializable {
     private String albumName;
 
     /** The list of photos in the album. */
-    private ArrayList<Photo> albumPhotos = new ArrayList<Photo>();
+    private ArrayList<classes.Photo> albumPhotos = new ArrayList<classes.Photo>();
 
     /**
      * Constructs an album object with a specified name and list of photos.
@@ -23,10 +23,10 @@ public class Album implements Serializable {
      * @param albumPhotos the list of photos in the album
      */
 
-    public Album(String albumName, ArrayList<Photo> albumPhotos){
+    public Album(String albumName, ArrayList<classes.Photo> albumPhotos){
         this.albumName = albumName;
         if(albumPhotos == null){
-            albumPhotos = new ArrayList<Photo>();
+            albumPhotos = new ArrayList<classes.Photo>();
         } else {
             for(int i = 0; i < albumPhotos.size(); i++){
                 this.albumPhotos.add(albumPhotos.get(i));
@@ -46,7 +46,7 @@ public class Album implements Serializable {
      * Returns the list of photos in the album.
      * @return the list of photos in the album
      */
-    public ArrayList<Photo> getAlbumPhotos() {
+    public ArrayList<classes.Photo> getAlbumPhotos() {
         return albumPhotos;
     }
 
@@ -62,7 +62,7 @@ public class Album implements Serializable {
      * Sets the list of photos in the album.
      * @param albumPhotos the new list of photos for the album
      */
-    public void setAlbumPhotos(ArrayList<Photo> albumPhotos) {
+    public void setAlbumPhotos(ArrayList<classes.Photo> albumPhotos) {
         for(int i = 0; i < albumPhotos.size(); i++){
             this.albumPhotos.add(albumPhotos.get(i));
         }
@@ -73,7 +73,7 @@ public class Album implements Serializable {
      * @param photo the photo to add to the album
      */
 
-    public void addPhotoToAlbum(Photo photo){
+    public void addPhotoToAlbum(classes.Photo photo){
         albumPhotos.add(photo);
     }
 
@@ -81,7 +81,7 @@ public class Album implements Serializable {
      * Replaces the list of photos in the album with a new list.
      * @param albumPhotos the new list of photos for the album
      */
-    public void editAlbum(ArrayList<Photo> albumPhotos){
+    public void editAlbum(ArrayList<classes.Photo> albumPhotos){
         albumPhotos.clear();
         for(int i = 0; i < albumPhotos.size(); i++){
             this.albumPhotos.add(albumPhotos.get(i));
@@ -109,7 +109,7 @@ public class Album implements Serializable {
      * Removes a photo from the album.
      * @param photo the photo to remove from the album
      */
-    public void removePhoto(Photo photo){
+    public void removePhoto(classes.Photo photo){
         albumPhotos.remove(photo);
     }
     
