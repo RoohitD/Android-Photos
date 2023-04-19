@@ -1,5 +1,7 @@
 package classes;
 
+import android.net.Uri;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -26,10 +28,9 @@ public class Photo implements Serializable {
      * @param image the image file of the photo
      * @param tags the tags of the photo, in the format "tag1: value1, tag2: value2, ..."
      */
-    public Photo(String caption, File image, String tags){
-        this.image = image;
-        this.caption = caption;
-        this.tags = convertTags(tags);
+    public Photo(Uri file){
+        this.image = new File(file.toString());
+        this.caption = file.toString();
         this.date = getLastModifiedDate();
     }
 
