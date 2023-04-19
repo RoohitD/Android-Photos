@@ -2,8 +2,10 @@ package com.example.photosapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,15 +40,15 @@ public class MainActivity extends AppCompatActivity {
              public void onClick(View view) {
                 albumList.add(currentAlbum);
                 arrayAdapter.notifyDataSetChanged();
-                Toast.makeText(MainActivity.this, currentAlbum.getAlbumName(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        list.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+       list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+               @Override
+               public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                   startActivity(new Intent(MainActivity.this, AlbumView.class));
+               }
             }
-        });
+       );
     }
 }
