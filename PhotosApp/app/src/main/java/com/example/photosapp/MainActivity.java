@@ -41,5 +41,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, currentAlbum.getAlbumName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 }
