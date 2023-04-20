@@ -9,17 +9,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
+import com.example.photosapp.Photo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-import classes.Photo;
 
 public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
     ArrayList<Album> albumList = new ArrayList<>();
+    ArrayList<AlbumView> albumViews = new ArrayList<AlbumView>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
              public void onClick(View view) {
+
+                AlbumView newAlbum = new AlbumView();
+                albumViews.add(newAlbum);
                 albumList.add(currentAlbum);
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -46,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                @Override
                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                   startActivity(new Intent(MainActivity.this, AlbumView.class));
+                   AlbumView openClass = albumViews.get(i);
+                   startActivity(new Intent(MainActivity.this, openClass.getClass()));
                }
             }
        );

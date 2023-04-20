@@ -20,9 +20,10 @@ public class AlbumView extends AppCompatActivity {
 
     FloatingActionButton fab_Photo;
     GridView photoGrid;
-    ArrayList<classes.Photo> photoList;
-    ArrayAdapter<classes.Photo> gridAdapter;
+    ArrayList<Photo> photoList;
 
+
+    ImageAdapter imageAdapter;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +32,9 @@ public class AlbumView extends AppCompatActivity {
 
         fab_Photo = findViewById(R.id.fab_Photo);
         photoGrid = findViewById(R.id.imageGrid);
-        photoList = new ArrayList<classes.Photo>();
-        gridAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, photoList);
-        photoGrid.setAdapter(gridAdapter);
+        photoList = new ArrayList<Photo>();
+        imageAdapter = new ImageAdapter(this);
+        photoGrid.setAdapter(imageAdapter);
         fab_Photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,9 +57,10 @@ public class AlbumView extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
             Uri fullPhotoUri = data.getData();
-            classes.Photo newPhoto = new classes.Photo(fullPhotoUri);
-            photoList.add(newPhoto);
-            gridAdapter.notifyDataSetChanged();
+            Photo newPhoto = new Photo(fullPhotoUri);
+            Toast.makeText(AlbumView.this, newPhoto.toString(), Toast.LENGTH_SHORT).show();
+            imageAdapter.imageArray.add(newPhoto);
+            imageAdapter.notifyDataSetChanged();
         }
     }
 

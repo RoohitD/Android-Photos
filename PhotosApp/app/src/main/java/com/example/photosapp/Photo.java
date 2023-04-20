@@ -1,4 +1,4 @@
-package classes;
+package com.example.photosapp;
 
 import android.net.Uri;
 
@@ -65,11 +65,11 @@ public class Photo implements Serializable {
 
     /**
      * Returns the image file of the photo.
-     * 
+     *
      * @return the image file of the photo
      */
-    public File getImage() {
-        return image;
+    public Uri getImage() {
+        return Uri.fromFile(image);
     }
 
     /**
