@@ -2,16 +2,16 @@ package com.example.photosapp;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,15 +23,21 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     FloatingActionButton fab_Search;
-    ArrayList<Album> albums = new ArrayList<Album>();
+    public static ArrayList<Album> albums = new ArrayList<Album>();
 
     ListView listView;
 
@@ -45,57 +51,54 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        listView = findViewById(R.id.albumList);
-        fab_Search = findViewById(R.id.fab);
+            listView = findViewById(R.id.albumList);
+            fab_Search = findViewById(R.id.fab);
+
+            loadData();
+            ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,albums);
+            listView.setAdapter(arrayAdapter);
+
+            fab_Search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, searchPhoto.class);
+                    //intent.putExtra(addEditAlbum.ALBUM_PHOTO, getAllPhotos());
+                    startActivity(intent);
+                }
+            });
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                @Override
+                                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                                    try {
+                                                        currentAlbum = albums.get(i);
+                                                        Intent intent = new Intent(MainActivity.this, addEditAlbum.class);
+                                                        intent.putExtra("albumName", albums.get(i).toString());
+                                                        intent.putExtra("albumPhotos", albums.get(i).getAlbum());
+                                                        startForResultEdit.launch(intent);
+                                                    } catch (Exception e) {
+                                                        throw new RuntimeException(e);
+                                                    }
+                                                }
+                                            }
+            );
+
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    albums.remove(i);
+                    listView.setAdapter(new ArrayAdapter<Album>(MainActivity.this, android.R.layout.simple_list_item_1, albums));
+                    return false;
+                }
+            });
+
+            registerActivities();
 
 
-        ArrayAdapter<Album> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,albums);
-        listView.setAdapter(arrayAdapter);
-        fab_Search.setOnClickListener(new View.OnClickListener() {
-            @Override
-             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, searchPhoto.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(addEditAlbum.ALBUM_PHOTO, getAllPhotos());
-                startActivity(intent, bundle);
-            }
-        });
 
-       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-               @Override
-               public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                   try {
-                       currentAlbum = albums.get(i);
-                       Intent intent = new Intent(MainActivity.this, addEditAlbum.class);
-                       intent.putExtra("albumName", albums.get(i).toString());
-                       intent.putExtra("albumPhotos", albums.get(i).getAlbum());
-                       startForResultEdit.launch(intent);
-                   } catch (Exception e) {
-                       throw new RuntimeException(e);
-                   }
-               }
-            }
-       );
-
-       listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-           @Override
-           public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                albums.remove(i);
-                arrayAdapter.notifyDataSetChanged();
-                return false;
-           }
-       });
-
-       registerActivities();
     }
 
-    private ArrayList<Photo> getAllPhotos() {
-        ArrayList<Photo> allPhotos = new ArrayList<Photo>();
-        for(Album album: albums){
-            allPhotos.addAll(album.getAlbum());
-        }
-        return allPhotos;
-    }
+
 
     private ActivityResultLauncher<Intent> startForResultEdit;
     private ActivityResultLauncher<Intent> startForResultAdd;
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         // redo the adapter to reflect change
         listView.setAdapter(new ArrayAdapter<Album>(this, android.R.layout.simple_list_item_1, albums));
+        saveData();
     }
 
     private void showAlbum(int pos){
@@ -181,5 +185,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("albums", null);
+        Type type = new TypeToken<ArrayList<Album>>() {}.getType();
+        albums = gson.fromJson(json, type);
+
+        if (albums == null) {
+            albums = new ArrayList<Album>();
+        }
+    }
+
+    private void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(albums);
+        editor.putString("albums", json);
+        editor.apply();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted
+
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }

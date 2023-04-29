@@ -19,7 +19,11 @@ public class Album implements Serializable{
 
     public Album(String albumName, ArrayList<Photo> photoList){
         this.albumName = albumName;
-        this.photoList = photoList;
+        if(photoList == null){
+            photoList = new ArrayList<Photo>();
+        } else {
+            this.photoList = photoList;
+        }
     }
 
     public String toString(){

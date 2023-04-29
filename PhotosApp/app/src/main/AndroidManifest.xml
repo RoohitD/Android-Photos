@@ -24,6 +24,9 @@
             android:exported="true"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".searchPhoto"
+            android:exported="true"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".imageView"
             android:exported="true"/>
     </application>
 

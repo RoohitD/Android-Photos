@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -54,7 +55,6 @@ public class addEditAlbum extends AppCompatActivity {
         saveButton = findViewById(R.id.saveButton);
         myToolbar = findViewById(R.id.my_toolbar);
         myToolbar.setTitle("Add/Edit Album");
-        //setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getExtras();
@@ -73,6 +73,8 @@ public class addEditAlbum extends AppCompatActivity {
             startActivityForResult(Intent.createChooser(intent, "Select Pictures"), REQUEST_CODE);
             imageAdapter.notifyDataSetChanged();
         });
+
+        //photoGrid.setOnItem
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.photosapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class imageGridAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -46,7 +48,7 @@ public class imageGridAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.image_view, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.imageView = convertView.findViewById(R.id.image_view);
+            viewHolder.imageView = convertView.findViewById(R.layout.image_view);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
