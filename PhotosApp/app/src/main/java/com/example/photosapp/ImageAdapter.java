@@ -1,46 +1,59 @@
 package com.example.photosapp;
 
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
-import com.example.photosapp.Photo;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
-public class ImageAdapter extends BaseAdapter {
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHolder> implements Filterable {
 
-    private Context mContext;
+    private ArrayList<Photo> mPhotos;
+    private ArrayList<Photo> filteredList;
 
-    public ArrayList<Photo> imageArray = new ArrayList<Photo>();
+    public ImageAdapter(ArrayList<Photo> photos) {
+        mPhotos = photos;
+    }
 
-    public ImageAdapter(Context mContext) {
-        this.mContext = mContext;
+    @NonNull
+    @Override
+    public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_view, parent, false);
+        return new PhotoViewHolder(v);
     }
 
     @Override
-    public int getCount() {
-        return imageArray.size();
+    public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
+        Photo currentItem = mPhotos.get(position);
+        holder.mImageView.setImageURI(currentItem.getImage());
     }
 
     @Override
-    public Object getItem(int i) {
-        return imageArray.get(i);
+    public int getItemCount() {
+        return mPhotos.size();
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
+    public Filter getFilter() {
+        return null;
     }
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public static class PhotoViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView image = new ImageView(mContext);
-        image.setImageURI(imageArray.get(i).getImage());
-        image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        image.setLayoutParams(new ViewGroup.LayoutParams(340,350));
-        return image;
+        public ImageView mImageView;
+
+        public PhotoViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mImageView = itemView.findViewById(R.id.image_view);
+        }
     }
 }
+
