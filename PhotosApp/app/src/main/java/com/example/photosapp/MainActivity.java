@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                     albums.remove(i);
                     listView.setAdapter(new ArrayAdapter<Album>(MainActivity.this, android.R.layout.simple_list_item_1, albums));
+                    saveData();
                     return false;
                 }
             });

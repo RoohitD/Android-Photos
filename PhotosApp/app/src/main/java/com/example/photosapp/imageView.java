@@ -70,7 +70,7 @@ public class imageView extends AppCompatActivity {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putSerializable(addEditAlbum.ALBUM_PHOTO,currentAlbum);
-        intent.putExtras(intent);
+        intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -80,10 +80,11 @@ public class imageView extends AppCompatActivity {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putSerializable(addEditAlbum.ALBUM_PHOTO,currentAlbum);
-        bundle.putInt(addEditAlbum.ALBUM_INDEX, albumIndex);
         intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
         finish();
     }
+
+
 
 }

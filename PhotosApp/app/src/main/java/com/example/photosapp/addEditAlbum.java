@@ -113,8 +113,6 @@ public class addEditAlbum extends AppCompatActivity {
             if (bundle == null) {
                 return;
             }
-            String tags = bundle.getString(PHOTO_TAGS);
-            int photoIndex = bundle.getInt(PHOTO_INDEX);
             ArrayList<Photo> newPhotos = (ArrayList<Photo>) bundle.getSerializable(ALBUM_PHOTO);
             photos.clear();
             photos.addAll(newPhotos);
