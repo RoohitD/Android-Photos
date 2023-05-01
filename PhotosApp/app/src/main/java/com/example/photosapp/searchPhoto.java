@@ -41,7 +41,7 @@ public class searchPhoto extends AppCompatActivity {
             allPhotos = (ArrayList<Photo>) bundle.getSerializable(addEditAlbum.ALBUM_PHOTO);
         }
 
-        ImageAdapter searchAdapter = new ImageAdapter(getAllPhotos());
+        ImageAdapter searchAdapter = new ImageAdapter(this, getAllPhotos());
         filteredImages.setAdapter(searchAdapter);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

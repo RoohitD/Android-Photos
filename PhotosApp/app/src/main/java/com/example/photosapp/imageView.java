@@ -9,12 +9,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 
 public class imageView extends AppCompatActivity {
 
     ArrayList<Photo> currentAlbum;
+
+    Toolbar myToolbar;
     ImageView imageSlide;
     EditText photoTag;
     int albumIndex;
@@ -26,6 +29,9 @@ public class imageView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_slide);
         photoTag = findViewById(R.id.photoTag);
+        //myToolbar = findViewById(R.id.toolbar);
+        //myToolbar.setTitle("Edit Photo");
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -60,30 +66,16 @@ public class imageView extends AppCompatActivity {
     }
 
     public void removePhoto(View view){
-
-        albumIndex++;
-        if(currentAlbum.get(albumIndex) == null){
-            albumIndex--;
-            if(currentAlbum.get(albumIndex) == null){
-                currentAlbum.remove(albumIndex);
-                Toast.makeText(this, "Photo removed", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                imageSlide.setImageURI(currentAlbum.get(albumIndex).getImage());
-                photoTag.setText(currentAlbum.get(albumIndex).getTags());
-                Toast.makeText(this, "Photo removed", Toast.LENGTH_SHORT).show();
-                currentAlbum.remove(albumIndex);
-            }
-        } else {
-            imageSlide.setImageURI(currentAlbum.get(albumIndex).getImage());
-            photoTag.setText(currentAlbum.get(albumIndex).getTags());
-            Toast.makeText(this, "Photo removed", Toast.LENGTH_SHORT).show();
-            currentAlbum.remove(albumIndex);
-        }
+        currentAlbum.remove(albumIndex);
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(addEditAlbum.ALBUM_PHOTO,currentAlbum);
+        intent.putExtras(intent);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     public void save(View view){
-        Toast.makeText(this, "Photo saved", Toast.LENGTH_SHORT).show();
         currentAlbum.get(albumIndex).setTags(photoTag.getText().toString());
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
@@ -93,4 +85,5 @@ public class imageView extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         finish();
     }
+
 }

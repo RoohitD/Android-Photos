@@ -75,7 +75,7 @@ public class addEditAlbum extends AppCompatActivity {
             photos = (ArrayList<Photo>) bundle.getSerializable(ALBUM_PHOTO);
         }
 
-        imageAdapter = new ImageAdapter(photos);
+        imageAdapter = new ImageAdapter(this, photos);
         photoGrid.setAdapter(imageAdapter);
 
         addPhoto.setOnClickListener(view -> {
@@ -84,6 +84,8 @@ public class addEditAlbum extends AppCompatActivity {
             startActivityForResult(Intent.createChooser(intent, "Select Pictures"), REQUEST_CODE);
             imageAdapter.notifyDataSetChanged();
         });
+
+
 
     }
 
@@ -104,11 +106,6 @@ public class addEditAlbum extends AppCompatActivity {
             saveImagetoStorage(photoUri);
             Uri savedImage = getImagefromStorage(getFileNameFromUri(photoUri));
             Photo photo = new Photo(savedImage);
-            if(photos.isEmpty()){
-                photo.setTags("Location: New York, People: Some");
-            } else {
-                photo.setTags("Location: New Jersey, People: Some");
-            }
             photos.add(photo);
             imageAdapter.notifyDataSetChanged();
         } else if (resultCode == RESULT_OK && requestCode == EDIT_PHOTO_REQUEST_CODE && data != null){
@@ -118,10 +115,11 @@ public class addEditAlbum extends AppCompatActivity {
             }
             String tags = bundle.getString(PHOTO_TAGS);
             int photoIndex = bundle.getInt(PHOTO_INDEX);
-            photos = (ArrayList<Photo>) bundle.getSerializable(ALBUM_PHOTO);
-            Photo photo = photos.get(photoIndex);
-            photo.setTags(tags);
-            photoGrid.setAdapter(new ImageAdapter(photos));
+            ArrayList<Photo> newPhotos = (ArrayList<Photo>) bundle.getSerializable(ALBUM_PHOTO);
+            photos.clear();
+            photos.addAll(newPhotos);
+            photoGrid.setAdapter(new ImageAdapter(this, photos));
+            Toast.makeText(this, "photos updated", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -161,7 +159,7 @@ public class addEditAlbum extends AppCompatActivity {
         photos = (ArrayList<Photo>) bundle.getSerializable(ALBUM_PHOTO);
         Photo photo = photos.get(photoIndex);
         photo.setTags(tags);
-        photoGrid.setAdapter(new ImageAdapter(photos));
+        photoGrid.setAdapter(new ImageAdapter(this, photos));
     }
 
     public void saveImagetoStorage(Uri imageUri){
