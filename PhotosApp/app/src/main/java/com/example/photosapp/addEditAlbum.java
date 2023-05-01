@@ -3,6 +3,7 @@ package com.example.photosapp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -32,7 +34,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class addEditAlbum extends AppCompatActivity {
+public class addEditAlbum extends AppCompatActivity implements ImageAdapter.OnPhotoLongClickListener {
 
     private static final int REQUEST_CODE = 1;
     public static final int EDIT_PHOTO_REQUEST_CODE = 2;
@@ -48,6 +50,12 @@ public class addEditAlbum extends AppCompatActivity {
     EditText albumName;
     Button saveButton;
     ArrayList<Photo> photos = new ArrayList<Photo>();
+
+    ArrayList<Album> albums = new ArrayList<Album>();
+
+    Album changedAlbum;
+
+    int changedIndex = -1;
 
     private Toolbar myToolbar;
 
@@ -73,9 +81,12 @@ public class addEditAlbum extends AppCompatActivity {
             albumIndex = bundle.getInt(ALBUM_INDEX);
             albumName.setText(bundle.getString(ALBUM_NAME));
             photos = (ArrayList<Photo>) bundle.getSerializable(ALBUM_PHOTO);
+            albums = (ArrayList<Album>) bundle.getSerializable("albums");
         }
 
         imageAdapter = new ImageAdapter(this, photos);
+        imageAdapter.setAlbumsList(albums);
+        imageAdapter.setOnLongClickListener(this);
         photoGrid.setAdapter(imageAdapter);
 
         addPhoto.setOnClickListener(view -> {
@@ -136,9 +147,13 @@ public class addEditAlbum extends AppCompatActivity {
         }
         Bundle bundle = new Bundle();
         bundle.putInt(ALBUM_INDEX, albumIndex);
+        if(changedIndex != -1 && changedAlbum != null){
+            bundle.putInt("changedIndex", changedIndex);
+            bundle.putSerializable("changedAlbum", changedAlbum);
+        }
         bundle.putString(ALBUM_NAME, name);
         bundle.putSerializable(ALBUM_PHOTO, photos);
-
+        bundle.putSerializable("albums", albums);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK, intent);
@@ -173,7 +188,6 @@ public class addEditAlbum extends AppCompatActivity {
             outputStream.flush();
             outputStream.close();
             inputStream.close();
-            Toast.makeText(this, "File saved: " + fileName, Toast.LENGTH_SHORT).show();
         } catch(Exception e){
             Toast.makeText(this, "File not saved", Toast.LENGTH_SHORT).show();
         }
@@ -193,5 +207,49 @@ public class addEditAlbum extends AppCompatActivity {
     public Uri getImagefromStorage(String uriPath){
         File file = new File(getFilesDir(), uriPath);
         return file.exists() ? Uri.fromFile(file) : null;
+    }
+
+
+    @Override
+    public void onPhotoLongClick(Photo photo, View view) {
+        // Display dialog with list of albums to choose from
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Move photo to album");
+
+        String[] albumTitles = getAlbumTitles(); // Get titles of all albums
+        builder.setItems(albumTitles, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Move photo to selected album
+                Photo updatedPhoto = new Photo(photo.getImage());
+                //updatePhotoInDatabase(updatedPhoto);
+
+                // Update RecyclerView
+                int position = photos.indexOf(photo);
+                photos.remove(position);
+                albums.get(which).addPhoto(updatedPhoto);
+                changedAlbum = albums.get(which);
+                changedIndex = which;
+                photoGrid.setAdapter(new ImageAdapter(view.getContext(), photos));
+            }
+        });
+
+        builder.create().show();
+    }
+
+
+    private String[] getAlbumTitles() {
+        ArrayList<String> albumTitles = new ArrayList<String>();
+
+        // Add title of each album to the list
+        for (Album album : albums) {
+            albumTitles.add(album.toString());
+        }
+
+        // Convert list to array
+        String[] titleArray = new String[albumTitles.size()];
+        albumTitles.toArray(titleArray);
+
+        return titleArray;
     }
 }

@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MainActivity.this, searchPhoto.class);
-                    //intent.putExtra(addEditAlbum.ALBUM_PHOTO, getAllPhotos());
                     startActivity(intent);
                 }
             });
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                                                         Intent intent = new Intent(MainActivity.this, addEditAlbum.class);
                                                         intent.putExtra("albumName", albums.get(i).toString());
                                                         intent.putExtra("albumPhotos", albums.get(i).getAlbum());
+                                                        intent.putExtra("albums", albums);
                                                         intent.putExtra(addEditAlbum.ALBUM_INDEX, i);
                                                         startForResultEdit.launch(intent);
                                                     } catch (Exception e) {
@@ -129,15 +129,25 @@ public class MainActivity extends AppCompatActivity {
         if (bundle == null) {
             return;
         }
+        int changedIndex = -1;
+        Album changedAlbum = null;
         // gather all info passed back by launched activity
         String name = bundle.getString(addEditAlbum.ALBUM_NAME);
         ArrayList<Photo> newAlbum = (ArrayList<Photo>) bundle.getSerializable("albumPhotos");
+        ArrayList<Album> newAlbumList = (ArrayList<Album>) bundle.getSerializable("albums");
         int index = bundle.getInt(addEditAlbum.ALBUM_INDEX);
+        if(bundle.containsKey("changedIndex") || bundle.containsKey("changedAlbum")){
+            changedIndex = bundle.getInt("changedIndex");
+            changedAlbum = (Album) bundle.getSerializable("changedAlbum");
+        }
         if (addEdit.equals("edit")) {
             // update the album
             Album album = albums.get(index);
             album.setAlbumName(name);
             album.setAlbum(newAlbum);
+            if(changedAlbum != null && changedIndex != -1){
+                albums.get(changedIndex).setAlbum(changedAlbum.getAlbum());
+            }
         } else if (addEdit.equals("add")){
             albums.add(new Album(name, newAlbum));
         }
