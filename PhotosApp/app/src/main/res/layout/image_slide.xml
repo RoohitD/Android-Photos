@@ -13,35 +13,63 @@
         tools:ignore="MissingConstraints" />
 
 
+    <EditText
+        android:id="@+id/photoTag"
+        android:layout_width="314dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageSlide"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Save"
+        android:onClick="save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photoTag"
+        tools:ignore="MissingConstraints,UnknownId" />
+
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/imageSlide"
-        android:layout_width="413dp"
-        android:layout_height="360dp"
-        android:layout_marginTop="36dp"
+        android:layout_width="290dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="69dp"
+        android:layout_width="89dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="22dp"
+        android:onClick="next"
         android:text="Next"
         app:layout_constraintBottom_toTopOf="@+id/removePhoto"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginBottom="69dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="back"
         android:text="Back"
         app:layout_constraintBottom_toTopOf="@+id/removePhoto"
+        app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
 
@@ -49,12 +77,14 @@
         android:id="@+id/removePhoto"
         android:layout_width="288dp"
         android:layout_height="47dp"
-        android:layout_marginBottom="76dp"
+        android:layout_marginTop="20dp"
+        android:onClick="removePhoto"
+
         android:text="Remove Photo"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button"
         tools:ignore="MissingConstraints" />
 
 

@@ -45,4 +45,9 @@ public class Album implements Serializable{
     public void removePhoto(Photo photo){
         photoList.remove(photo);
     }
+
+    public void setAlbum(ArrayList<Photo> newAlbum){
+        photoList.clear();
+        photoList.addAll(newAlbum);
+    }
 }

@@ -44,6 +44,19 @@ public class searchPhoto extends AppCompatActivity {
         ImageAdapter searchAdapter = new ImageAdapter(getAllPhotos());
         filteredImages.setAdapter(searchAdapter);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
     }
 
     private ArrayList<Photo> getAllPhotos() {

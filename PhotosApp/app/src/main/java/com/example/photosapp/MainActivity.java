@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     FloatingActionButton fab_Search;
     public static ArrayList<Album> albums = new ArrayList<Album>();
 
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
             listView = findViewById(R.id.albumList);
             fab_Search = findViewById(R.id.fab);
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                                                         Intent intent = new Intent(MainActivity.this, addEditAlbum.class);
                                                         intent.putExtra("albumName", albums.get(i).toString());
                                                         intent.putExtra("albumPhotos", albums.get(i).getAlbum());
+                                                        intent.putExtra(addEditAlbum.ALBUM_INDEX, i);
                                                         startForResultEdit.launch(intent);
                                                     } catch (Exception e) {
                                                         throw new RuntimeException(e);
@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             });
-
             registerActivities();
+
 
 
 
@@ -131,20 +131,15 @@ public class MainActivity extends AppCompatActivity {
         // gather all info passed back by launched activity
         String name = bundle.getString(addEditAlbum.ALBUM_NAME);
         ArrayList<Photo> newAlbum = (ArrayList<Photo>) bundle.getSerializable("albumPhotos");
-        int index = bundle.getInt("index");
+        int index = bundle.getInt(addEditAlbum.ALBUM_INDEX);
         if (addEdit.equals("edit")) {
-            // update the movie
+            // update the album
             Album album = albums.get(index);
             album.setAlbumName(name);
-            for (int i = 0; i < newAlbum.size(); i++){
-                album.addPhoto(newAlbum.get(i));
-            }
+            album.setAlbum(newAlbum);
         } else if (addEdit.equals("add")){
             albums.add(new Album(name, newAlbum));
         }
-
-        //Toast.makeText(this, newAlbum.size(), Toast.LENGTH_SHORT).show();
-
         // redo the adapter to reflect change
         listView.setAdapter(new ArrayAdapter<Album>(this, android.R.layout.simple_list_item_1, albums));
         saveData();
@@ -206,20 +201,5 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission has been granted
-
-            } else {
-                // Permission denied
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
 }

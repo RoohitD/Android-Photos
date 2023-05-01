@@ -1,8 +1,11 @@
 package com.example.photosapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,19 +13,25 @@ import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHolder> implements Filterable{
 
     private static ArrayList<Photo> mPhotos;
-    private ArrayList<Photo> filteredList;
+    private ArrayList<Photo> filteredPhotoList = new ArrayList<Photo>();
+
+    private boolean isFiltering = false;
 
     public ImageAdapter(ArrayList<Photo> photos) {
         mPhotos = photos;
+        filteredPhotoList = photos;
     }
 
     @NonNull
@@ -34,11 +43,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
-        Photo currentItem = mPhotos.get(position);
+        Photo currentItem = filteredPhotoList.get(position);
         holder.mImageView.setImageURI(currentItem.getImage());
-        holder.mImageView.setOnClickListener(view -> {
-
-        });
     }
 
     @Override
@@ -48,9 +54,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHol
 
     @Override
     public Filter getFilter() {
-        return null;
+        return new ImageFilter();
     }
-
 
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -69,7 +74,48 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.PhotoViewHol
             Intent intent = new Intent(view.getContext(), imageView.class);
             intent.putExtra(addEditAlbum.ALBUM_PHOTO, mPhotos);
             intent.putExtra("albumIndex", position);
-            view.getContext().startActivity(intent);
+            ((Activity) view.getContext()).startActivityForResult(intent, addEditAlbum.EDIT_PHOTO_REQUEST_CODE);
+        }
+
+    }
+
+    private class ImageFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<Photo> filteredList = new ArrayList<Photo>();
+            if(constraint == null || constraint.length() == 0){
+                isFiltering = false;
+                filteredList.addAll(mPhotos);
+            } else {
+                String query = constraint.toString().toLowerCase().trim();
+
+                for (Photo photo: mPhotos){
+                    for (String tag : photo.returnTags().values()) {
+                        if (tag.toLowerCase().contains(query)) {
+                            filteredList.add(photo);
+                            break;
+                        }
+                    }
+                }
+                isFiltering = true;
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredPhotoList.clear();
+                if(TextUtils.isEmpty(constraint)) {
+                    filteredPhotoList.addAll(mPhotos);
+                    notifyDataSetChanged();
+                } else {
+                    filteredPhotoList.addAll((ArrayList<Photo>) results.values);
+                    notifyDataSetChanged();
+                }
+
 
         }
     }
