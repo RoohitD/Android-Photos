@@ -17,7 +17,6 @@ public class imageView extends AppCompatActivity {
 
     ArrayList<Photo> currentAlbum;
 
-    Toolbar myToolbar;
     ImageView imageSlide;
     EditText photoTag;
     int albumIndex;
@@ -29,9 +28,7 @@ public class imageView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_slide);
         photoTag = findViewById(R.id.photoTag);
-        //myToolbar = findViewById(R.id.toolbar);
-        //myToolbar.setTitle("Edit Photo");
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){

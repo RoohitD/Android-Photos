@@ -128,7 +128,6 @@ public class addEditAlbum extends AppCompatActivity implements ImageAdapter.OnPh
             photos.clear();
             photos.addAll(newPhotos);
             photoGrid.setAdapter(new ImageAdapter(this, photos));
-            Toast.makeText(this, "photos updated", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -222,7 +221,7 @@ public class addEditAlbum extends AppCompatActivity implements ImageAdapter.OnPh
             public void onClick(DialogInterface dialog, int which) {
                 // Move photo to selected album
                 Photo updatedPhoto = new Photo(photo.getImage());
-                //updatePhotoInDatabase(updatedPhoto);
+                updatedPhoto.setTags(photo.getTags());
 
                 // Update RecyclerView
                 int position = photos.indexOf(photo);
