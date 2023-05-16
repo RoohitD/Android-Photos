@@ -5,7 +5,7 @@ This app is a basic photos app for Android devices with Android 10.0+.
 
 ## Authors
 
-- Rohit Deshmukh (rrd82@scarletmail.rutgers.edu)
+- Rohit Deshmukh
 
 ## Criteria
 
